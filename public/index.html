@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="ISO-8859-1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css.css">
+	<script type="text/javascript" src="src/grid.js"></script>
+	<script type="text/javascript" src="src/version.js"></script>
+	<script type="text/javascript" src="src/detector.js"></script>
+	<script type="text/javascript" src="src/formatinf.js"></script>
+	<script type="text/javascript" src="src/errorlevel.js"></script>
+	<script type="text/javascript" src="src/bitmat.js"></script>
+	<script type="text/javascript" src="src/datablock.js"></script>
+	<script type="text/javascript" src="src/bmparser.js"></script>
+	<script type="text/javascript" src="src/datamask.js"></script>
+	<script type="text/javascript" src="src/rsdecoder.js"></script>
+	<script type="text/javascript" src="src/gf256poly.js"></script>
+	<script type="text/javascript" src="src/gf256.js"></script>
+	<script type="text/javascript" src="src/decoder.js"></script>
+	<script type="text/javascript" src="src/qrcode.js"></script>
+	<script type="text/javascript" src="src/findpat.js"></script>
+	<script type="text/javascript" src="src/alignpat.js"></script>
+	<script type="text/javascript" src="src/databr.js"></script>
+<title>RVACO QR Code Scanner</title>
+</head>
+
+<body>
+
+<div class="container">
+<h2>Instrument Loan</h2>
+<i>v1.0</i>
+
+<form onsubmit="return validateForm()" action="https://docs.google.com/forms/d/e/1FAIpQLSdc8lC2r1GWt4g6oBXlUwE-ZHsUJ3SXjsFZDZAdr_AFTVrfhg/formResponse"  
+method="POST">
+	<div class="form-group"><div class="col-sm-12">
+	<input class="name" type="text" placeholder="Name" name="entry.250077581"> <br>
+	<input class="qrcode-text" type=text placeholder="QR Code" value="" name="entry.2122483085" disabled="disabled"> <br>
+	</div></div>
+
+	<div class="form-group"><div class="col-sm-12">
+	<label for="btn"> Click to upload QR code
+	<input class="qrcode-text-btn" id="btn" type=file accept="image/*" capture=environment onchange="openQRCamera(this);" style="display : none"> </label><br>
+	
+	<label for="submit"> Submit
+	<input type="submit" id="submit" style="display:none"> </label>
+	</div></div>
+</form>
+</div>
+
+<script>
+	function openQRCamera(node) {
+	  var reader = new FileReader();
+	  var text = document.querySelector(".qrcode-text")
+	  reader.onload = function() {	
+	    qrcode.callback = function(res) {
+	      if(res instanceof Error) {
+	        alert("No QR code found. Please make sure the QR code is within the camera's frame and try again.");
+	      } else {
+	        text.value = res;
+	      }
+	    };
+	    qrcode.decode(reader.result);
+	  };
+	  reader.readAsDataURL(node.files[0]);
+	}
+
+	function validateForm(){
+		var name = document.querySelector(".name").value;
+		var code = document.querySelector(".qrcode-text").value;
+
+		if(name == "" || code == ""){
+			alert("Please enter your name and scan instrument QR code.");
+			return false;
+		}
+
+		if(code == "error decoding QR code"){
+			alert("Please scan the QR code again.");
+			return false;
+		}
+	}
+	// function submitLoan(){
+	// 	// FEIYU 11/12/18: google api is bugged currently. api key is not working for POST. 
+	// 	//                 Ref: https://issuetracker.google.com/issues/73974970
+	// 	// var content = {
+	// 	// 	 "majorDimension": "ROWS",
+	// 	// 	 "values": [
+	// 	// 				  [
+	// 	// 				   "time",
+	// 	// 				   "name",
+	// 	// 				   "code"
+	// 	// 				  ]
+	// 	// 	 			]
+	// 	// 			};
+	// 	// var jsonString = JSON.stringify(content);
+	// 	// var request = new XMLHttpRequest();
+	// 	// request.open("POST","https://sheets.googleapis.com/v4/spreadsheets/1LS17bK8e6JuCJlJM6hurVFUCcTKFVrwCMjGp1liRwPM/values/A1:append?includeValuesInResponse=false&insertDataOption=INSERT_ROWS&responseDateTimeRenderOption=SERIAL_NUMBER&responseValueRenderOption=FORMATTED_VALUE&valueInputOption=USER_ENTERED&key={//API key here}");
+	// 	// request.setRequestHeader("Content-Type", "application/json");
+	// 	// request.send(jsonString);
+	// }
+
+</script>
+
+</body>
+</html>
